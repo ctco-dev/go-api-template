@@ -2,12 +2,12 @@ FROM golang:1.10.4-alpine as build
 
 ARG PROJECT="go-api-template"
 
-RUN apk update && apk upgrade && apk add --no-cache git curl
+RUN apk update && apk upgrade && apk add --no-cache git
 RUN go get -u github.com/mgechev/revive
 
-# dep
+# dep install
 ARG DEP_VERSION="v0.5.0"
-RUN curl https://raw.githubusercontent.com/golang/dep/$DEP_VERSION/install.sh | sh
+RUN wget -qO- https://raw.githubusercontent.com/golang/dep/$DEP_VERSION/install.sh | sh
 
 WORKDIR /go/src/ctco-dev/$PROJECT
 
