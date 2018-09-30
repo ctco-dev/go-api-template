@@ -6,7 +6,8 @@ RUN apk update && apk upgrade && apk add --no-cache git curl
 RUN go get -u github.com/mgechev/revive
 
 # dep
-RUN curl https://raw.githubusercontent.com/golang/dep/v0.5.0/install.sh | sh
+ARG DEP_VERSION="v0.5.0"
+RUN curl https://raw.githubusercontent.com/golang/dep/$DEP_VERSION/install.sh | sh
 
 WORKDIR /go/src/ctco-dev/$PROJECT
 
