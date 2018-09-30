@@ -19,6 +19,7 @@ COPY revive.toml revive.toml
 COPY internal internal
 COPY cmd cmd
 
+# feed only our packages to go fmt excluding vendors/
 RUN go fmt $(go list ./... | grep -v /vendor/)
 RUN revive -config ./revive.toml -formatter stylish -exclude ./vendor/... ./...
 RUN go tool vet $(go list -f '{{.Dir}}' ./... | grep -v /vendor/)
