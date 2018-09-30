@@ -1,0 +1,32 @@
+FROM golang:1.10.4-alpine as build
+
+ARG PROJECT="go-api-template"
+
+RUN apk update && apk upgrade && apk add --no-cache bash git curl vim
+
+# dep install
+RUN curl https://raw.githubusercontent.com/golang/dep/v0.5.0/install.sh | sh
+
+# revive: replacement for golint
+RUN go get -u github.com/mgechev/revive
+
+# realize: watcher and live reloading
+RUN go get github.com/oxequa/realize
+
+WORKDIR /go/src/ctco-dev/$PROJECT
+
+# install dependencies
+COPY Gopkg.lock .
+COPY Gopkg.toml .
+RUN dep ensure -vendor-only
+
+COPY .realize.yaml .realize.yaml
+COPY revive.toml revive.toml
+COPY cmd cmd
+COPY internal internal
+
+RUN go fmt $(go list ./... | grep -v /vendor/)
+RUN revive -config ./revive.toml -formatter stylish -exclude ./vendor/... ./...
+RUN go tool vet $(go list -f '{{.Dir}}' ./... | grep -v /vendor/)
+
+CMD ["realize", "start"]

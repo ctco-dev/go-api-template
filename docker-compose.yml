@@ -1,0 +1,12 @@
+version: "2"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    image: go-api-template
+    ports:
+      - 3006:3006
+    environment:
+      - JOKE_SERVICE_URL
+    tty: true

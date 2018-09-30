@@ -1,0 +1,15 @@
+version: "2"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: build/Dockerfile.dev
+    image: go-api-template
+    volumes:
+      - ./internal:/go/src/ctco-dev/go-api-template/internal
+      - ./cmd:/go/src/ctco-dev/go-api-template/cmd
+    ports:
+      - 3006:3006
+    environment:
+      - JOKE_SERVICE_URL
+    tty: true
