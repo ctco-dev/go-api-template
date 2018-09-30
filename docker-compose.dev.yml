@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: build/Dockerfile.dev
-    image: go-api-template
     volumes:
       - ./internal:/go/src/ctco-dev/go-api-template/internal
       - ./cmd:/go/src/ctco-dev/go-api-template/cmd

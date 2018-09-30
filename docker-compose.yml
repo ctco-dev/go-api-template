@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: build/Dockerfile
-    image: go-api-template
     ports:
       - 3006:3006
     environment:
