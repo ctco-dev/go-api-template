@@ -2,7 +2,7 @@ FROM golang:1.10.4-alpine as build
 
 ARG PROJECT="go-api-template"
 
-RUN apk update && apk upgrade && apk add --no-cache bash git curl vim
+RUN apk update && apk upgrade && apk add --no-cache git curl
 
 # dep install
 RUN curl https://raw.githubusercontent.com/golang/dep/v0.5.0/install.sh | sh

@@ -2,7 +2,7 @@ FROM golang:1.10.4-alpine as build
 
 ARG PROJECT="go-api-template"
 
-RUN apk update && apk upgrade && apk add --no-cache bash git curl
+RUN apk update && apk upgrade && apk add --no-cache git curl
 RUN go get -u github.com/mgechev/revive
 
 # dep
