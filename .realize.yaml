@@ -1,0 +1,26 @@
+settings:
+  legacy:
+    force: false
+    interval: 100ms
+server:
+  status: false
+  open: false
+  host: localhost
+  port: 5001
+schema:
+- name: app
+  path: .
+  commands:
+    install:
+      status: true
+      dir: cmd
+    run:
+      status: true
+      method: cmd
+  watcher:
+    paths:
+    - /
+    extensions:
+    - go
+    ignored_paths:
+    - vendor
