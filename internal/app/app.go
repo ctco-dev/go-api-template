@@ -9,6 +9,7 @@ import (
 
 type Specification struct {
 	JokeServiceURL string `split_words:"true" required:"true" default:"https://api.chucknorris.io/jokes/random"`
+	Port           int    `split_words:"true" required:"true" default:"3000"`
 }
 
 type (

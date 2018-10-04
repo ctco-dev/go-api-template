@@ -31,4 +31,6 @@ RUN go fmt $(go list ./... | grep -v /vendor/)
 RUN revive -config ./revive.toml -formatter stylish -exclude ./vendor/... ./...
 RUN go tool vet $(go list -f '{{.Dir}}' ./... | grep -v /vendor/)
 
+EXPOSE 3000
+
 CMD ["realize", "start"]

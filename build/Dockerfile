@@ -37,4 +37,6 @@ WORKDIR /usr/bin/
 
 COPY --from=build /tmp/app ./
 
+EXPOSE 3000
+
 CMD ["./app"]
