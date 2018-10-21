@@ -1,20 +1,21 @@
-FROM golang:1.10.4-alpine as build
+FROM golang:1.11.1-alpine3.8 as build
 
 ARG PROJECT="go-api-template"
 
 RUN apk update && apk upgrade && apk add --no-cache git
 RUN go get -u github.com/mgechev/revive
 
-# dep install
-ARG DEP_VERSION="v0.5.0"
-RUN wget -qO- https://raw.githubusercontent.com/golang/dep/$DEP_VERSION/install.sh | sh
-
 WORKDIR /go/src/ctco-dev/$PROJECT
 
+# enable Go Modules 
+ENV GO111MODULE=on
+# no CGO (see https://github.com/golang/go/issues/28065)
+ENV CGO_ENABLED=0
+
 # install dependencies
-COPY Gopkg.lock .
-COPY Gopkg.toml .
-RUN dep ensure -vendor-only
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 
 COPY revive.toml revive.toml
 COPY internal internal
