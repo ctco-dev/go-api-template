@@ -39,4 +39,6 @@ COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 WORKDIR /usr/bin/
 COPY --from=build /tmp/app ./
 
+EXPOSE 3000
+
 CMD ["./app"]

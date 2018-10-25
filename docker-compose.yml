@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: build/Dockerfile
     ports:
-      - 3006:3006
+      - 3000:3000
     environment:
       - JOKE_SERVICE_URL
     tty: true
