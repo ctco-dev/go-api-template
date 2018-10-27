@@ -1,12 +1,8 @@
-FROM golang:1.10.4-alpine as build
+FROM golang:1.11.1-alpine3.8 as build
 
 ARG PROJECT="go-api-template"
 
 RUN apk update && apk upgrade && apk add --no-cache git
-
-# dep install
-ARG DEP_VERSION="v0.5.0"
-RUN wget -qO- https://raw.githubusercontent.com/golang/dep/$DEP_VERSION/install.sh | sh
 
 # revive: replacement for golint
 RUN go get -u github.com/mgechev/revive
@@ -15,11 +11,15 @@ RUN go get -u github.com/mgechev/revive
 RUN go get github.com/oxequa/realize
 
 WORKDIR /go/src/ctco-dev/$PROJECT
+# enable Go Modules
+ENV GO111MODULE=on
+# no CGO (see https://github.com/golang/go/issues/28065)
+ENV CGO_ENABLED=0
 
 # install dependencies
-COPY Gopkg.lock .
-COPY Gopkg.toml .
-RUN dep ensure -vendor-only
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
 
 COPY .realize.yaml .realize.yaml
 COPY revive.toml revive.toml
