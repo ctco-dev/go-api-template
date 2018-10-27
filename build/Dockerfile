@@ -28,14 +28,18 @@ RUN go tool vet $(go list -f '{{.Dir}}' ./... | grep -v /vendor/)
 
 RUN go test -short ./...
 
-RUN go build -o /tmp/app ./cmd
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags='-w -s' -o /tmp/app ./cmd
 
-FROM alpine:3.6
-
+FROM alpine:3.6 as alpine
 RUN apk update && apk add ca-certificates
 
-WORKDIR /usr/bin/
+FROM scratch
 
+COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+WORKDIR /usr/bin/
 COPY --from=build /tmp/app ./
+
+EXPOSE 3000
 
 CMD ["./app"]
