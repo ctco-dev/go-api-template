@@ -1,10 +1,11 @@
 # Installation
 
-### Install go sdk 1.10.4
+### Install go sdk 1.11.+
 
 See how to [install go](https://golang.org/doc/install#install)
 
 ```
+export GO111MODULE=on
 cd $GOPATH
 mkdir -p src/ctco-dev
 cd src/ctco-dev
