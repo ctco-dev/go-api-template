@@ -38,7 +38,7 @@ func main() {
 			resp, err := someApp.DoSomething(reqCtx)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				log.WithCtx(reqCtx).Error(err)
+				log.WithCtx(reqCtx).Errorf("%+v\n", err)
 				w.Write([]byte("Cant't get new joke"))
 				return
 			}

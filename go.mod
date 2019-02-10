@@ -3,6 +3,7 @@ module github.com/ctco-dev/go-api-template
 require (
 	github.com/kelseyhightower/envconfig v1.3.0
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/pkg/errors v0.8.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.1.0
 	golang.org/x/crypto v0.0.0-20180927165925-5295e8364332 // indirect
