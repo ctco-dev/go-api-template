@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"ctco-dev/go-api-template/internal/app"
-	"ctco-dev/go-api-template/internal/log"
+	"github.com/ctco-dev/go-api-template/internal/app"
+	"github.com/ctco-dev/go-api-template/internal/log"
 	"encoding/json"
 	"fmt"
 	"net/http"

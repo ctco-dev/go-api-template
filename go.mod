@@ -1,4 +1,4 @@
-module ctco-dev/go-api-template
+module github.com/ctco-dev/go-api-template
 
 require (
 	github.com/kelseyhightower/envconfig v1.3.0

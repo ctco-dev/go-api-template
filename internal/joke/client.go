@@ -2,7 +2,7 @@ package joke
 
 import (
 	"context"
-	"ctco-dev/go-api-template/internal/log"
+	"github.com/ctco-dev/go-api-template/internal/log"
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
