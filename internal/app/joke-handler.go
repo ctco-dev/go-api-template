@@ -31,7 +31,7 @@ func (j *jokeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		j.handleGet(w, r)
 	default:
-		http.Error(w, "Only GET and PUT are allowed", http.StatusMethodNotAllowed)
+		http.Error(w, "Only GET is allowed", http.StatusMethodNotAllowed)
 	}
 }
 
