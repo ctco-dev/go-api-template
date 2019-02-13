@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"ctco-dev/go-api-template/internal/app"
-	"ctco-dev/go-api-template/internal/log"
+	"github.com/ctco-dev/go-api-template/internal/app"
+	"github.com/ctco-dev/go-api-template/internal/log"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -38,7 +38,7 @@ func main() {
 			resp, err := someApp.DoSomething(reqCtx)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				log.WithCtx(reqCtx).Error(err)
+				log.WithCtx(reqCtx).Errorf("%+v\n", err)
 				w.Write([]byte("Cant't get new joke"))
 				return
 			}

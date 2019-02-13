@@ -2,10 +2,9 @@ package joke
 
 import (
 	"context"
-	"ctco-dev/go-api-template/internal/log"
+	"github.com/ctco-dev/go-api-template/internal/log"
 	"encoding/json"
-	"fmt"
-	"github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
 )
@@ -43,14 +42,14 @@ func (c *ChuckNorrisAPIClient) GetJoke(ctx context.Context) (jokeResp Response, 
 
 	req, err := http.NewRequest(http.MethodGet, c.url, nil)
 	if err != nil {
-		return jokeResp, err
+		return jokeResp, errors.Wrap(err, "failed to create a request")
 	}
 
 	req = req.WithContext(ctx)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return jokeResp, err
+		return jokeResp, errors.Wrap(err, "failed to make a call")
 	}
 
 	log.WithCtx(ctx).WithField("status", resp.Status).Info("Got response")
@@ -60,23 +59,17 @@ func (c *ChuckNorrisAPIClient) GetJoke(ctx context.Context) (jokeResp Response, 
 
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			return jokeResp, err
+			return jokeResp, errors.Wrap(err, "failed to read response")
 		}
 
 		err = json.Unmarshal(body, &jokeResp)
 		if err != nil {
-			log.WithCtx(ctx).
-				WithFields(logrus.Fields{
-					"body":  string(body),
-					"error": err,
-				}).
-				Error("Can't decode body")
-			return jokeResp, err
+			return jokeResp, errors.Wrapf(err, "can't decode body: %v", body)
 		}
 
 		return jokeResp, nil
 
 	}
 
-	return jokeResp, fmt.Errorf("got bad response %s", resp.Status)
+	return jokeResp, errors.Errorf("got bad response %s", resp.Status)
 }
