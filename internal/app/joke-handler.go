@@ -1,11 +1,12 @@
 package app
 
 import (
-	"ctco-dev/go-api-template/internal/joke"
-	"ctco-dev/go-api-template/internal/log"
 	"encoding/json"
 	"net/http"
 	"time"
+
+	"github.com/ctco-dev/go-api-template/internal/joke"
+	"github.com/ctco-dev/go-api-template/internal/log"
 )
 
 type jokeResult struct {

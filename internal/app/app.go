@@ -1,10 +1,11 @@
 package app
 
 import (
-	"ctco-dev/go-api-template/internal/joke"
 	"net/http"
 	"path"
 	"strings"
+
+	"github.com/ctco-dev/go-api-template/internal/joke"
 )
 
 //Specification is a container of app config parameters

@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"ctco-dev/go-api-template/internal/app"
-	"ctco-dev/go-api-template/internal/log"
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/ctco-dev/go-api-template/internal/app"
+	"github.com/ctco-dev/go-api-template/internal/log"
 
 	"github.com/kelseyhightower/envconfig"
 	uuid "github.com/satori/go.uuid"
