@@ -24,7 +24,7 @@ func main() {
 		log.WithCtx(rootCtx).Panicf("env vars error: '%v'", err)
 	}
 
-	someApp := app.New(env)
+	someApp := app.New(rootCtx, env)
 	addr := fmt.Sprintf(":%d", env.Port)
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		reqID := uuid.NewV4().String()[0:8]

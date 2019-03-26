@@ -3,12 +3,13 @@ package mongobeer
 import (
 	"context"
 
-	"github.com/ctco-dev/go-api-template/internal/log"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/ctco-dev/go-api-template/internal/beer"
-	"github.com/mongodb/mongo-go-driver/bson"
-	"github.com/mongodb/mongo-go-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"github.com/ctco-dev/go-api-template/internal/log"
 )
 
 type beerModel struct {
@@ -21,10 +22,12 @@ type repo struct {
 }
 
 // NewRepo returns a new mongodb beer repository
-func NewRepo(ctx context.Context) beer.Repository {
-
-	client, err := mongo.Connect(ctx, "mongodb://localhost:27017")
-
+func NewRepo(ctx context.Context, host string, db string, collection string) beer.Repository {
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		log.WithCtx(ctx).Panic(err)
+	}
+	err = client.Connect(ctx)
 	if err != nil {
 		log.WithCtx(ctx).Panic(err)
 	}
@@ -36,10 +39,11 @@ func NewRepo(ctx context.Context) beer.Repository {
 	}
 
 	log.WithCtx(ctx).Info("Connected to MongoDB!")
-	return &repo{collection: client.Database("test").Collection("beer")}
+	return &repo{collection: client.Database(db).Collection(collection)}
 }
 
 func (r *repo) Read(ctx context.Context, id beer.ID) (*beer.Beer, error) {
+	log.WithCtx(ctx).Info("Reading a beer")
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -58,11 +62,40 @@ func (r *repo) Read(ctx context.Context, id beer.ID) (*beer.Beer, error) {
 	}, nil
 }
 
+func (r *repo) ReadAll(ctx context.Context) ([]*beer.Beer, error) {
+	log.WithCtx(ctx).Info("Reading all beers")
+	cur, err := r.collection.Find(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	defer cur.Close(ctx)
+
+	var res []*beer.Beer
+
+	for cur.Next(ctx) {
+		var elem beerModel
+		err = cur.Decode(&elem)
+		if err != nil {
+			return nil, err
+		}
+
+		res = append(res, &beer.Beer{
+			ID:   elem.ID.Hex(),
+			Name: elem.Name,
+		})
+	}
+
+	return res, nil
+}
+
 func (r *repo) Write(ctx context.Context, beer beer.Beer) (beer.ID, error) {
+	log.WithCtx(ctx).Info("Writing a beer")
+	document := bson.D{
+		{"name", beer.Name},
+	}
 
-	document := beerModel{Name: beer.Name}
-
-	res, err := r.collection.InsertOne(ctx, beer)
+	res, err := r.collection.InsertOne(ctx, document)
 	if err != nil {
 		return "", err
 	}
@@ -71,6 +104,7 @@ func (r *repo) Write(ctx context.Context, beer beer.Beer) (beer.ID, error) {
 }
 
 func (r *repo) Remove(ctx context.Context, id beer.ID) error {
+	log.WithCtx(ctx).Info("Removing a beer")
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err

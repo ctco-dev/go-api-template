@@ -18,6 +18,11 @@ type Reader interface {
 	Read(context.Context, ID) (*Beer, error)
 }
 
+// AllReader reads all beers
+type AllReader interface {
+	ReadAll(context.Context) ([]*Beer, error)
+}
+
 // Writer writes a new beer and returns its id
 type Writer interface {
 	Write(context.Context, Beer) (ID, error)
@@ -31,6 +36,7 @@ type Remover interface {
 // Repo is an interface for a beer repository
 type Repository interface {
 	Reader
+	AllReader
 	Writer
 	Remover
 }
