@@ -14,7 +14,7 @@ import (
 //Specification is a container of app config parameters
 type Specification struct {
 	JokeServiceURL  string `split_words:"true" required:"true" default:"https://api.chucknorris.io/jokes/random"`
-	Port            int    `split_words:"true" required:"true" default:"3000"`
+	JokeServicePort int    `split_words:"true" required:"true" default:"3000"`
 	MongoHost       string `required:"true" default:"mongodb://localhost:27017"`
 	MongoDatabase   string `required:"true" default:"template"`
 	MongoCollection string `required:"true" default:"beer"`

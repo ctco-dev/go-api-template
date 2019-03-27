@@ -8,4 +8,8 @@ services:
       - 3000:3000
     environment:
       - JOKE_SERVICE_URL
+      - JOKE_SERVICE_PORT
+      - MONGO_HOST
+      - MONGO_DATABASE
+      - MONGO_COLLECTION
     tty: true

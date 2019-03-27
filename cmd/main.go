@@ -25,7 +25,7 @@ func main() {
 	}
 
 	someApp := app.New(rootCtx, env)
-	addr := fmt.Sprintf(":%d", env.Port)
+	addr := fmt.Sprintf(":%d", env.JokeServicePort)
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		reqID := uuid.NewV4().String()[0:8]
 		reqCtx := log.NewContext(rootCtx, logrus.Fields{"reqID": reqID})
@@ -34,6 +34,6 @@ func main() {
 		someApp.ServeHTTP(w, r.WithContext(reqCtx))
 	})
 
-	log.WithCtx(rootCtx).Infof("Server is running at: http://localhost:%d", env.Port)
+	log.WithCtx(rootCtx).Infof("Server is running at: http://localhost:%d", env.JokeServicePort)
 	log.WithCtx(rootCtx).Fatal(http.ListenAndServe(addr, handler))
 }

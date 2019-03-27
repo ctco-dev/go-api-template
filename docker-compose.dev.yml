@@ -9,6 +9,16 @@ services:
       - ./cmd:/go/src/ctco-dev/go-api-template/cmd
     ports:
       - 3000:3000
+    depends_on:
+      - mongo
     environment:
       - JOKE_SERVICE_URL
+      - JOKE_SERVICE_PORT
+      - MONGO_HOST
+      - MONGO_DATABASE
+      - MONGO_COLLECTION=mongodb://mongo:27017
     tty: true
+  mongo:
+    image: mongo
+    volumes:
+      - /data/db
