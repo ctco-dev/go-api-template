@@ -42,11 +42,11 @@ func (b *beerHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	ids, ok := r.URL.Query()["id"]
 
 	if !ok || len(ids[0]) < 1 {
-		b.getAllBeers(ctx, w)
+		getAllBeers(ctx, w, b.repository)
 		return
 	}
 
-	b.getOneBeer(ctx, w, ids[0])
+	getOneBeer(ctx, w, ids[0], b.repository)
 }
 
 func (b *beerHandler) handlePut(w http.ResponseWriter, r *http.Request) {
@@ -59,13 +59,7 @@ func (b *beerHandler) handlePut(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := b.repository.Write(ctx, beer.Beer{Name: names[0]})
-	if err != nil {
-		http.Error(w, "Can't write a beer.", http.StatusInternalServerError)
-		return
-	}
-
-	b.writeResult(ctx, w, id)
+	writeBeer(ctx, w, names[0], b.repository)
 }
 
 func (b *beerHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
@@ -78,36 +72,50 @@ func (b *beerHandler) handleDelete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := b.repository.Remove(ctx, ids[0])
-	if err != nil {
-		http.Error(w, "Can't delete a beer.", http.StatusInternalServerError)
-		return
-	}
-
-	b.writeResult(ctx, w, "success")
+	removeBeer(ctx, w, ids[0], b.repository)
 }
 
-func (b *beerHandler) getOneBeer(ctx context.Context, w http.ResponseWriter, id string) {
-	beer, err := b.repository.Read(ctx, id)
+func getOneBeer(ctx context.Context, w http.ResponseWriter, id string, reader beer.Reader) {
+	beer, err := reader.Read(ctx, id)
 	if err != nil {
 		http.Error(w, "Can't get a beer.", http.StatusInternalServerError)
 		return
 	}
 
-	b.writeResult(ctx, w, beer)
+	writeResult(ctx, w, beer)
 }
 
-func (b *beerHandler) getAllBeers(ctx context.Context, w http.ResponseWriter) {
-	beers, err := b.repository.ReadAll(ctx)
+func getAllBeers(ctx context.Context, w http.ResponseWriter, reader beer.AllReader) {
+	beers, err := reader.ReadAll(ctx)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	b.writeResult(ctx, w, beers)
+	writeResult(ctx, w, beers)
 }
 
-func (b *beerHandler) writeResult(ctx context.Context, w http.ResponseWriter, data interface{}) {
+func writeBeer(ctx context.Context, w http.ResponseWriter, name string, writer beer.Writer) {
+	id, err := writer.Write(ctx, beer.Beer{Name: name})
+	if err != nil {
+		http.Error(w, "Can't write a beer.", http.StatusInternalServerError)
+		return
+	}
+
+	writeResult(ctx, w, id)
+}
+
+func removeBeer(ctx context.Context, w http.ResponseWriter, id string, remover beer.Remover) {
+	err := remover.Remove(ctx, id)
+	if err != nil {
+		http.Error(w, "Can't delete a beer.", http.StatusInternalServerError)
+		return
+	}
+
+	writeResult(ctx, w, "success")
+}
+
+func writeResult(ctx context.Context, w http.ResponseWriter, data interface{}) {
 	bytes, err := json.Marshal(data)
 	if err != nil {
 		http.Error(w, "Can't encode response.", http.StatusInternalServerError)
