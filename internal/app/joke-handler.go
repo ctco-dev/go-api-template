@@ -41,7 +41,7 @@ func (j *jokeHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	log.WithCtx(ctx).Info("I'm trying to get new joke")
 	jokeResp, err := j.client.GetJoke(ctx)
 	if err != nil {
-		http.Error(w, "Can't get error", http.StatusInternalServerError)
+		http.Error(w, "Can't get a joke", http.StatusInternalServerError)
 		return
 	}
 

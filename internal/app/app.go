@@ -1,39 +1,52 @@
 package app
 
 import (
+	"context"
 	"net/http"
 	"path"
 	"strings"
+
+	mongobeer "github.com/ctco-dev/go-api-template/internal/db"
 
 	"github.com/ctco-dev/go-api-template/internal/joke"
 )
 
 //Specification is a container of app config parameters
 type Specification struct {
-	JokeServiceURL string `split_words:"true" required:"true" default:"https://api.chucknorris.io/jokes/random"`
-	Port           int    `split_words:"true" required:"true" default:"3000"`
+	JokeServiceURL  string `split_words:"true" required:"true" default:"https://api.chucknorris.io/jokes/random"`
+	JokeServicePort int    `split_words:"true" required:"true" default:"3000"`
+	MongoHost       string `split_words:"true" required:"true" default:"mongodb://localhost:27017"`
+	MongoDatabase   string `split_words:"true" required:"true" default:"template"`
+	MongoCollection string `split_words:"true" required:"true" default:"beer"`
 }
 
 // App implements a sample http service
 type app struct {
 	jokeHandler *jokeHandler
+	beerHandler *beerHandler
 }
 
 // New creates a new application
-func New(env Specification) http.Handler {
-	return &app{jokeHandler: &jokeHandler{
-		client: joke.NewChuckNorrisAPIClient(env.JokeServiceURL),
-	}}
+func New(ctx context.Context, env Specification) http.Handler {
+	return &app{
+		jokeHandler: &jokeHandler{client: joke.NewChuckNorrisAPIClient(env.JokeServiceURL)},
+		beerHandler: &beerHandler{
+			repository: mongobeer.NewRepo(ctx, env.MongoHost, env.MongoDatabase, env.MongoCollection),
+		},
+	}
 }
 
 func (a *app) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var head string
 	head, r.URL.Path = ShiftPath(r.URL.Path)
-	if head == "joke" {
+	switch head {
+	case "joke":
 		a.jokeHandler.ServeHTTP(w, r)
-		return
+	case "beer":
+		a.beerHandler.ServeHTTP(w, r)
+	default:
+		http.Error(w, "Not Found", http.StatusNotFound)
 	}
-	http.Error(w, "Not Found", http.StatusNotFound)
 }
 
 // ShiftPath splits off the first component of p, which will be cleaned of
