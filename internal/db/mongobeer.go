@@ -23,7 +23,7 @@ type repo struct {
 
 // NewRepo returns a new mongodb beer repository
 func NewRepo(ctx context.Context, host string, db string, collection string) beer.Repository {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	client, err := mongo.NewClient(options.Client().ApplyURI(host))
 	if err != nil {
 		log.WithCtx(ctx).Panic(err)
 	}
@@ -64,7 +64,7 @@ func (r *repo) Read(ctx context.Context, id beer.ID) (*beer.Beer, error) {
 
 func (r *repo) ReadAll(ctx context.Context) ([]*beer.Beer, error) {
 	log.WithCtx(ctx).Info("Reading all beers")
-	cur, err := r.collection.Find(ctx, nil)
+	cur, err := r.collection.Find(ctx, bson.D{})
 	if err != nil {
 		return nil, err
 	}

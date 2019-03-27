@@ -14,9 +14,9 @@ services:
     environment:
       - JOKE_SERVICE_URL
       - JOKE_SERVICE_PORT
-      - MONGO_HOST
+      - MONGO_HOST=mongodb://mongo:27017
       - MONGO_DATABASE
-      - MONGO_COLLECTION=mongodb://mongo:27017
+      - MONGO_COLLECTION
     tty: true
   mongo:
     image: mongo

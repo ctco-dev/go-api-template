@@ -15,9 +15,9 @@ import (
 type Specification struct {
 	JokeServiceURL  string `split_words:"true" required:"true" default:"https://api.chucknorris.io/jokes/random"`
 	JokeServicePort int    `split_words:"true" required:"true" default:"3000"`
-	MongoHost       string `required:"true" default:"mongodb://localhost:27017"`
-	MongoDatabase   string `required:"true" default:"template"`
-	MongoCollection string `required:"true" default:"beer"`
+	MongoHost       string `split_words:"true" required:"true" default:"mongodb://localhost:27017"`
+	MongoDatabase   string `split_words:"true" required:"true" default:"template"`
+	MongoCollection string `split_words:"true" required:"true" default:"beer"`
 }
 
 // App implements a sample http service

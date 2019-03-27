@@ -10,9 +10,8 @@ RUN go get -u github.com/mgechev/revive
 # realize: watcher and live reloading
 RUN go get github.com/oxequa/realize
 
-WORKDIR /go/src/ctco-dev/$PROJECT
-# enable Go Modules
-ENV GO111MODULE=on
+WORKDIR /app/src/ctco-dev/$PROJECT
+
 # no CGO (see https://github.com/golang/go/issues/28065)
 ENV CGO_ENABLED=0
 

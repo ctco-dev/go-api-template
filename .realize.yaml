@@ -13,10 +13,10 @@ schema:
   commands:
     install:
       status: true
-      dir: cmd
+      method: go build -o output/app ./cmd
     run:
       status: true
-      method: cmd
+      method: output/app
   watcher:
     paths:
     - /
